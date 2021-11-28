@@ -5,7 +5,7 @@
 - Клонировать репозиторий и перейти в него:
 >git clone git@github.com:ilyarogozin/api_final_yatube.git
 
->cd kittygram
+>cd api_final_yatube
 
 - Cоздать и активировать виртуальное окружение:
 >python3 -m venv env

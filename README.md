@@ -2,10 +2,9 @@
 ## api_yatube - это учебное API для учебного проекта - социальной сети "Yatube"
 ### Проект реализован на DRF
 # Как запустить проект:
-- Клонировать репозиторий:
+- Клонировать репозиторий и перейти в него:
 >git clone git@github.com:ilyarogozin/api_final_yatube.git
 
-- Перейти в репозиторий:
 >cd kittygram
 
 - Cоздать и активировать виртуальное окружение:
@@ -15,6 +14,7 @@
 
 - Установить зависимости из файла requirements.txt:
 >python3 -m pip install --upgrade pip
+
 >pip install -r requirements.txt
 
 - Выполнить миграции:

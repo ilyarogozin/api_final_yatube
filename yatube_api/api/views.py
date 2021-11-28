@@ -1,10 +1,12 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
+from rest_framework.generics import ListCreateAPIView
 from rest_framework.permissions import IsAuthenticated
 
-from posts.models import Group, Post
+from posts.models import Group, Post, Follow
 from .permissions import IsAuthorOrReadOnly
-from .serializers import CommentSerializer, GroupSerializer, PostSerializer
+from .serializers import (CommentSerializer, GroupSerializer,
+                          PostSerializer, FollowSerializer)
 
 
 class PostViewSet(viewsets.ModelViewSet):
@@ -33,3 +35,8 @@ class CommentViewSet(viewsets.ModelViewSet):
 class GroupViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = GroupSerializer
     queryset = Group.objects
+
+
+class FollowViewSet(ListCreateAPIView):
+    serializer_class = FollowSerializer
+    queryset = Follow.objects

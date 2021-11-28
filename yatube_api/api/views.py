@@ -1,7 +1,9 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
+from rest_framework import filters
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.pagination import LimitOffsetPagination
 
 from posts.models import Group, Post, Follow
 from .permissions import IsAuthorOrReadOnly
@@ -13,6 +15,7 @@ class PostViewSet(viewsets.ModelViewSet):
     serializer_class = PostSerializer
     queryset = Post.objects
     permission_classes = (IsAuthorOrReadOnly,)
+    pagination_class = LimitOffsetPagination
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
@@ -41,7 +44,8 @@ class FollowViewSet(ListCreateAPIView):
     serializer_class = FollowSerializer
     queryset = Follow.objects
     permission_classes = (IsAuthenticated,)
+    filter_backends = (filters.SearchFilter)
+    search_fields = ('following',)
 
     def perform_create(self, serializer):
-        user = self.request.user
-        serializer.save(user=user)
+        serializer.save(user=self.request.user)

@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework.relations import SlugRelatedField
 
 
-from posts.models import Comment, Group, Post, Follow
+from posts.models import Comment, Group, Post, Follow, User
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -39,6 +39,24 @@ class FollowSerializer(serializers.ModelSerializer):
         read_only=True, slug_field='username',
         default=serializers.CurrentUserDefault(),
     )
+    following = serializers.SlugRelatedField(
+        queryset=User.objects.all(),
+        slug_field='username'
+    )
+
+    def validate_following(self, following):
+        """
+        Checks that you are not subscribing to yourself.
+        Checks that the subscription does not exist yet.
+        """
+        user = self.context['request'].user
+        if following == user:
+            raise serializers.ValidationError(
+                'Вы не можете подписаться сами на себя!'
+            )
+        elif Follow.objects.filter(following=following, user=user).exists:
+            raise serializers.ValidationError('Такая подписка уже существует!')
+        return following
 
     class Meta:
         model = Follow

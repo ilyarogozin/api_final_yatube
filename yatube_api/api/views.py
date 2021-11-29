@@ -2,10 +2,11 @@ from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework import filters
 from rest_framework.generics import ListCreateAPIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import (IsAuthenticatedOrReadOnly,
+                                        IsAuthenticated)
 from rest_framework.pagination import LimitOffsetPagination
 
-from posts.models import Group, Post, Follow
+from posts.models import Group, Post
 from .permissions import IsAuthorOrReadOnly
 from .serializers import (CommentSerializer, GroupSerializer,
                           PostSerializer, FollowSerializer)
@@ -13,8 +14,8 @@ from .serializers import (CommentSerializer, GroupSerializer,
 
 class PostViewSet(viewsets.ModelViewSet):
     serializer_class = PostSerializer
-    queryset = Post.objects
-    permission_classes = (IsAuthorOrReadOnly,)
+    queryset = Post.objects.all()
+    permission_classes = (IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly)
     pagination_class = LimitOffsetPagination
 
     def perform_create(self, serializer):
@@ -23,7 +24,7 @@ class PostViewSet(viewsets.ModelViewSet):
 
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
-    permission_classes = (IsAuthorOrReadOnly,)
+    permission_classes = (IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly)
 
     def get_queryset(self):
         post = get_object_or_404(Post, id=self.kwargs.get('post_id'))
@@ -42,10 +43,12 @@ class GroupViewSet(viewsets.ReadOnlyModelViewSet):
 
 class FollowViewSet(ListCreateAPIView):
     serializer_class = FollowSerializer
-    queryset = Follow.objects
     permission_classes = (IsAuthenticated,)
-    filter_backends = (filters.SearchFilter)
-    search_fields = ('following',)
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('following__username',)
+
+    def get_queryset(self):
+        return self.request.user.follower.all()
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)

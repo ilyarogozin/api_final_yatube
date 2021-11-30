@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework import filters
-from rest_framework.generics import ListCreateAPIView
+from rest_framework import mixins
 from rest_framework.permissions import (IsAuthenticatedOrReadOnly,
                                         IsAuthenticated)
 from rest_framework.pagination import LimitOffsetPagination
@@ -41,12 +41,12 @@ class GroupViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Group.objects
 
 
-class FollowViewSet(ListCreateAPIView):
+class FollowViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
+                    viewsets.GenericViewSet):
     serializer_class = FollowSerializer
     permission_classes = (IsAuthenticated,)
     filter_backends = (filters.SearchFilter,)
     search_fields = ('following__username',)
-    lookup_field = None
 
     def get_queryset(self):
         return self.request.user.follower.all()

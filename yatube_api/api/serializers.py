@@ -58,10 +58,10 @@ class FollowSerializer(serializers.ModelSerializer):
     class Meta:
         model = Follow
         fields = '__all__'
-        read_only_fields = ('user',)
         validators = [
             UniqueTogetherValidator(
                 queryset=Follow.objects.all(),
-                fields=['user', 'following']
+                fields=['user', 'following'],
+                message='Такая подписка уже существует!'
             )
         ]

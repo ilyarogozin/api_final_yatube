@@ -46,6 +46,7 @@ class FollowViewSet(ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
     filter_backends = (filters.SearchFilter,)
     search_fields = ('following__username',)
+    lookup_field = None
 
     def get_queryset(self):
         return self.request.user.follower.all()

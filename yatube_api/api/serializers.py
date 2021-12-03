@@ -47,7 +47,7 @@ class FollowSerializer(serializers.ModelSerializer):
 
     def validate_following(self, following):
         """
-        Checks that you are not subscribing to yourself.
+        Check that you are not subscribing to yourself.
         """
         if following == self.context['request'].user:
             raise serializers.ValidationError(

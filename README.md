@@ -1,5 +1,5 @@
 # API for Yatube social network
-## api_yatube - это учебное API для учебного проекта - социальной сети "Yatube"
+## api_yatube - это API для социальной сети "Yatube"
 ### Авторы:
 - Ilya Rogozin https://github.com/ilyarogozin
 ### Технологии:
